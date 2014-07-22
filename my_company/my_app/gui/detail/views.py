@@ -1,6 +1,6 @@
 from my_company.common.base_view import BaseTemplateView, BaseJsonAjaxView
 
-class HomeView(BaseTemplateView):
+class DetailView(BaseTemplateView):
     template_name = 'home_index.html'
     
     def get_data(self):
@@ -8,7 +8,7 @@ class HomeView(BaseTemplateView):
         data = {'var1': self.request.GET.get('var1', 'blank')}
         return data
     
-class HomeAjaxView(BaseJsonAjaxView):
+class DetailAjaxView(BaseJsonAjaxView):
     
     def sample1(self, *args, **kwargs):
         return {'Message01': 'I am very well, thank you'}
