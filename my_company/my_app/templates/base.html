@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="shortcut icon" href="#">
+<link rel="stylesheet" type="text/css"
+	href="/static/assets/libraries/font-awesome/css/font-awesome.css"
+	media="screen, projection">
+<link rel="stylesheet" type="text/css"
+	href="/static/assets/libraries/jquery-bxslider/jquery.bxslider.css"
+	media="screen, projection">
+<link rel="stylesheet" type="text/css"
+	href="/static/assets/libraries/flexslider/flexslider.css"
+	media="screen, projection">
+<link rel="stylesheet" type="text/css"
+	href="/static/assets/css/realocation.css" media="screen, projection"
+	id="css-main">
+
+<link href="http://fonts.googleapis.com/css?family=Raleway:400,700"
+	rel="stylesheet" type="text/css">
+<style type="text/css">
+body {
+	font-family: "Tahoma", "Arial", sans-serif;
+}
+
+.header-top {
+	padding: 6px 0px;
+}
+
+.mh-properties-filter {
+	text-align: left;
+}
+
+.mh-properties-filter select {
+	color: #252525;
+	font-size: 14px;
+	font-weight: 300;
+	padding: 8px 11px;
+}
+
+.block-content-small-padding {
+	padding: 35px 0px;
+}
+
+button .rightImage img {
+	width: 20px;
+	height: 20px;
+}
+</style>
+<title>Tìm nhà trọ</title>
+</head>
+
+<body>
+
+	<div id="wrapper">
+		<div id="header-wrapper">
+			<div id="header">
+				<div id="header-inner">
+					<div class="header-top">
+						<div class="container">
+							<div class="header-identity">
+								<a href="/" class="header-identity-target"> <span
+									class="header-icon"><i class="fa fa-home"></i></span> <span
+									class="header-title">Ở TRỌ . VN</span>
+								<!-- /.header-title --> <span class="header-slogan">Tất
+										cả đều có hình &amp; Mô tả chi tiết <br> Miễn phí 100%
+								</span>
+								<!-- /.header-slogan -->
+								</a>
+								<!-- /.header-identity-target-->
+							</div>
+							<!-- /.header-identity -->
+
+							<div class="header-actions pull-right">
+								<a href="/submit-property/" class="btn btn-regular">Ký gửi nhà cho thuê</a>
+							</div>
+							<!-- /.header-actions -->
+
+							<button class="navbar-toggle" type="button"
+								data-toggle="collapse" data-target=".header-navigation">
+								<span class="sr-only">Toggle navigation</span> <span
+									class="icon-bar"></span> <span class="icon-bar"></span> <span
+									class="icon-bar"></span>
+							</button>
+						</div>
+						<!-- /.container -->
+					</div>
+
+				</div>
+				<!-- /.header-inner -->
+			</div>
+			<!-- /#header -->
+		</div>
+		<!-- /#header-wrapper -->
+		
+		{% block main-wrapper %}
+		{% endblock %}
+
+		<div id="footer-wrapper">
+			<div id="footer">
+				<div id="footer-inner">
+
+					<div class="footer-bottom">
+						<div class="container">
+							<p class="center no-margin">&copy; 2014 Ở Trọ . VN, All Right
+								reserved</p>
+
+							<div class="center">
+								<ul class="social">
+									<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+									<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+									<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+									<li><a href="#"><i class="fa fa-flickr"></i></a></li>
+									<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+									<li><a href="#"><i class="fa fa-youtube"></i></a></li>
+									<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+									<li><a href="#"><i class="fa fa-vimeo-square"></i></a></li>
+									<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+								</ul>
+								<!-- /.social -->
+							</div>
+							<!-- /.center -->
+						</div>
+						<!-- /.container -->
+					</div>
+					<!-- /.footer-bottom -->
+				</div>
+				<!-- /#footer-inner -->
+			</div>
+			<!-- /#footer -->
+		</div>
+		<!-- /#footer-wrapper -->
+	</div>
+	<!-- /#wrapper -->
+
+	<script type="text/javascript" src="/static/assets/js/jquery.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/libraries/isotope/jquery.isotope.min.js"></script>
+
+	<script type="text/javascript"
+		src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=true"></script>
+	<script type="text/javascript" src="/static/assets/js/gmap3.infobox.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/js/gmap3.clusterer.js"></script>
+	<script type="text/javascript" src="/static/assets/js/map.js"></script>
+
+	<script type="text/javascript"
+		src="/static/assets/libraries/bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/libraries/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/libraries/jquery-bxslider/jquery.bxslider.min.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/libraries/flexslider/jquery.flexslider.js"></script>
+	<script type="text/javascript"
+		src="/static/assets/js/jquery.chained.min.js"></script>
+	<script type="text/javascript" src="/static/assets/js/realocation.js"></script>
+	<script type="text/javascript" src="/static/js/main.js"></script>
+	<script type="text/javascript" src="/static/js/data.js"></script>
+	<script type="text/javascript">
+	function getCookie(name) {
+	    var cookieValue = null;
+	    if (document.cookie && document.cookie != '') {
+	        var cookies = document.cookie.split(';');
+	        for (var i = 0; i < cookies.length; i++) {
+	            var cookie = jQuery.trim(cookies[i]);
+	            // Does this cookie string begin with the name we want?
+	            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+	                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                break;
+	            }
+	        }
+	    }
+	    return cookieValue;
+	}
+	var csrftoken = getCookie('csrftoken');
+	</script>
+{% block scripts %}
+
+{% endblock %}
+</body>
+</html>

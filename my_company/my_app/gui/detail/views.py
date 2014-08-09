@@ -1,7 +1,7 @@
 from my_company.common.base_view import BaseTemplateView, BaseJsonAjaxView
 
 class DetailView(BaseTemplateView):
-    template_name = 'home_index.html'
+    template_name = 'property_detail.html'
     
     def get_data(self):
         '''transfer variables to html'''

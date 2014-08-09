@@ -1,11 +1,15 @@
+import simplejson
+
 from my_company.common.base_view import BaseTemplateView, BaseJsonAjaxView
+from my_company.my_app.core import models
+from my_company.my_app.core.models import District, Ward
+
 
 class HomeView(BaseTemplateView):
-    template_name = 'home_index.html'
+    template_name = 'index.html'
     
     def get_data(self):
-        '''transfer variables to html'''
-        data = {'var1': self.request.GET.get('var1', 'blank')}
+        data = {'HouseTypes': models.HouseType.choices}
         return data
     
 class HomeAjaxView(BaseJsonAjaxView):

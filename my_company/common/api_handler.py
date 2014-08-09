@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import httplib2
 import simplejson
 from httplib2 import DEFAULT_MAX_REDIRECTS

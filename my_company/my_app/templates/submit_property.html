@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block main-wrapper %}
+<div id="main-wrapper">
+	<div id="main">
+		<div id="main-inner">
+			<div class="container">
+				<div class="block-content block-content-small-padding">
+					<div class="block-content-inner">
+						<h2 class="center">Thông tin ký gửi nhà cho thuê</h2>
+
+						<form id="form-info" action="json/save-property/" method="post" enctype="multipart/form-data" onSubmit="return checkHouseInfo()">			
+						    <input type="hidden" id='result'/>
+						    {% csrf_token %}
+							<div class="box">
+								<div class="form-group">
+									<label>Loại nhà</label>
+									<div class="select-wrapper">
+										<select class="form-control" name="house-type">
+											<option value="">Chọn loại nhà</option>
+											{% for item in HouseTypes %}
+											<option value="{{item.0}}">{{item.1}}</option> 
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Mô tả nhà</label>
+									<textarea name="house-description" class="form-control" rows="6"></textarea>
+								</div>
+								<!-- /.form-group -->
+							</div>
+							<!-- /.box -->
+
+							<div class="row">
+								<div class="col-sm-4">
+									<h3>Thông tin chi tiết</h3>
+
+									<div class="box">
+
+										<div class="form-group">
+											<label>Quận</label>
+
+											<div class="select-wrapper">
+												<select class="form-control district" name="house-district">
+													<option value="">Chọn quận/huyện</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label>Phường/Xã</label>
+
+											<div class="select-wrapper">
+												<select class="form-control ward" name="house-ward">
+													<option value="">Chọn phường/xã</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label>Địa chỉ</label>
+
+											<div>
+												<input type="text" name="house-address" class="form-control" placeholder="Nhập địa chỉ">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-sm-4">
+									<h3><br></h3>
+
+									<div class="box">
+										<div class="form-group">
+											<label>Số phòng ngủ</label>
+
+											<div>
+												<input type="text" name="house-num-bedroom" class="form-control" placeholder="Nhập số phòng ngủ">
+											</div>
+										</div>
+										<div class="form-group">
+											<label>Số toalet</label>
+
+											<div>
+												<input type="text" name="house-num-toalet" class="form-control" placeholder="Nhập số toalet">
+											</div>
+										</div>
+										<div class="form-group">
+											<label>Điện thoại</label>
+
+											<div>
+												<input type="text" name="house-phone" class="form-control" placeholder="Nhập số điện thoại liên hệ">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-sm-4">
+									<h3><br></h3>
+
+									<div class="box">
+										<div class="form-group">
+											<label>Giá cho thuê</label>
+
+											<div>
+												<input type="text" name="house-price" class="form-control" placeholder="Vd: 1.000.000đ/tháng">
+											</div>
+										</div>
+										<div class="form-group">
+											<label>Giá điện</label>
+
+											<div>
+												<input type="text" name="house-electric-price" class="form-control" placeholder="Vd: 1.500đ/kWh">
+											</div>
+										</div>
+										<div class="form-group">
+											<label>Giá nước</label>
+
+											<div>
+												<input type="text" name="house-water-price" class="form-control" placeholder="Vd: 5.000đ/m3 hoặc 20.000đ/tháng">
+											</div>
+										</div>
+										<!-- /.form-group -->
+									</div>
+									<!-- /.box -->
+								</div>
+								<!-- /.col-sm-3 -->
+							</div>
+							<!-- /.row -->
+
+							<h3>Các thông tin khác</h3>
+
+							<div class="box clearfix">
+								<ul class="submit-property-list list-unstyled">
+									<li class="checkbox col-sm-3" name="house-air-condition"><label><input
+											type="checkbox">Có máy lạnh</label></li>
+									<li class="checkbox col-sm-3" name="house-balcony"><label><input
+											type="checkbox">Có ban công</label></li>
+									<li class="checkbox col-sm-3" name="house-free-time"><label><input
+											type="checkbox">Giờ giấc tự do</label></li>
+									<li class="checkbox col-sm-3" name="house-with-owner"><label><input
+											type="checkbox">Lối đi riêng với chủ</label></li>
+									<li class="checkbox col-sm-3" name="house-can-cook"><label><input
+											type="checkbox">Được nấu ăn</label></li>
+									<li class="checkbox col-sm-3" name="house-internet"><label><input
+											type="checkbox">Internet</label></li>
+									<li class="checkbox col-sm-3" name="house-tivi-cable"><label><input
+											type="checkbox">Truyền hình cáp</label></li>
+									<li class="checkbox col-sm-3" name="house-quiet"><label><input
+											type="checkbox">Khu yên tĩnh</label></li>
+									<li class="checkbox col-sm-3" name="house-interior"><label><input
+											type="checkbox">Có nội thất</label></li>
+									<li class="checkbox col-sm-3" name="house-same-toalet"><label><input
+											type="checkbox">Toalet riêng</label></li>
+								</ul>
+							</div>
+							<!-- /.box -->
+							<h3>Hình ảnh</h3>
+							<div class="box">
+								<div class="form-group">
+									<input type="file" id="house-image-1">
+								</div>
+								<div class="form-group"><input type="file" name="file-1"></div>
+								<div class="form-group"><input type="file" name="file-2"></div>
+								<div class="form-group"><input type="file" name="file-3"></div>
+								<div class="form-group"><input type="file" name="file-4"></div>
+								<div class="form-group"><input type="file" name="file-5"></div>
+								<div class="form-group"><input type="file" name="file-6"></div>
+							</div>
+
+							<div class="form-group center">
+								<input type="submit" id="save-property" class="btn btn-inversed btn-primary" value="Gửi thông tin">
+							</div>
+							<!-- /.form-group -->
+						</form>
+					</div>
+					<!-- /.block-content-inner -->
+				</div>
+				<!-- /.block-content -->
+			</div>
+			<!-- /.container -->
+		</div>
+		<!-- /#main-inner -->
+	</div>
+	<!-- /#main -->
+</div>
+<!-- /#main-wrapper -->
+{% endblock %}
+
+{% block scripts%}
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script type="text/javascript">
+
+function checkHouseInfo() {
+	alert("Thank you for your check!");
+	return true;
+}
+
+$(document).ready(function() { 
+	$('#form-info').ajaxForm(function() { 
+        alert("Thank you for your comment!"); 
+    }); 
+});
+</script>
+{% endblock %}
