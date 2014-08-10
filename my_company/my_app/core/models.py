@@ -5,10 +5,9 @@ from my_company.my_app.core import from_enum_choice
 from django.contrib.auth.models import User
 
 class HouseType(object):
-    (CHUNG_CU, NHA_RIENG, NHA_MAT_PHO, NHA_TRO) = range(4)
+    (CHUNG_CU, NHA_NGUYEN_CAN, NHA_TRO) = range(3)
     choices = [(CHUNG_CU, 'Chung cư'),
-               (NHA_RIENG, 'Nhà riêng'),
-               (NHA_MAT_PHO, 'Nhà mặt phố'),
+               (NHA_NGUYEN_CAN, 'Nhà nguyên căn'),
                (NHA_TRO, 'Phòng trọ'),]
 
 class HouseStatus(object):
@@ -27,23 +26,24 @@ class HouseSource(object):
 
 #SMALL: 200 X 150, MEDIUM: 520 X 500, LARGE: 840 X 500 
 class ImageType(object):
-    (SMALL, MEDIUM, LARGE) = range(3)
-    choices = [(SMALL, 'SMALL'),
+    (ORIGINAL, SMALL, MEDIUM, LARGE) = range(4)
+    choices = [(ORIGINAL, 'ORIGINAL'),
+               (SMALL, 'SMALL'),
                (MEDIUM, 'MEDIUM'),
                (LARGE, 'LARGE')]
 
 class District(models.Model):
     Pre = models.CharField(max_length=20)
     Name = models.CharField(max_length=100)
-    Order = models.IntegerField()
-    Center = gismodels.PointField()
+    Order = models.IntegerField(default=0)
+    Center = gismodels.PointField(null=True)
     objects = gismodels.GeoManager()
 
 class Ward(models.Model):
     Pre = models.CharField(max_length=20)
     District = models.ForeignKey('District')
     Name = models.CharField(max_length=100)
-    Center = gismodels.PointField()
+    Center = gismodels.PointField(null=True)
     objects = gismodels.GeoManager()
 
 class Broker(models.Model):
@@ -60,36 +60,45 @@ class House(models.Model):
     Type = models.SmallIntegerField(choices=from_enum_choice(HouseType))
     Status = models.SmallIntegerField(choices=from_enum_choice(HouseStatus), default=HouseStatus.CHUA_THUE)
     Source = models.SmallIntegerField(choices=from_enum_choice(HouseSource))
-    SourceRef = models.CharField(max_length=200)
+    SourceRef = models.CharField(max_length=200, null=True)
     Broker = models.ForeignKey('Broker', null=True)
     Staff = models.ForeignKey('Staff', null=True)
     
-    CreatedUser = models.ForeignKey(User)
+    CreatedUser = models.ForeignKey(User, null=True)
     CreatedTime = models.DateTimeField(auto_now_add=True)
     UpdatedTime = models.DateTimeField(auto_now=True)
     NumView = models.IntegerField(default=0)
     NumCall = models.IntegerField(default=0)
     #Description
-    Size = models.FloatField()
-    BedRooms = models.IntegerField()
+    Size = models.FloatField(null=True)
+    BedRooms = models.IntegerField(null=True)
+    Toalets = models.IntegerField(null=True)
     Price = models.DecimalField(max_digits=15, decimal_places=0)
-    ElectricityPrice = models.DecimalField(max_digits=15, decimal_places=0)
-    WaterPrice = models.DecimalField(max_digits=15, decimal_places=0)
+    ElectricityPrice = models.CharField(max_length=50, null=True)
+    WaterPrice = models.CharField(max_length=50, null=True)
     
-    HasFurniture = models.BooleanField()
-    HasInternet = models.BooleanField()
-    IsFreeTime = models.BooleanField()
-    IsSeperateGate = models.BooleanField()
-    Description = models.TextField()
+    HasFurniture = models.NullBooleanField(null=True)
+    HasInternet = models.NullBooleanField(null=True)
+    IsFreeTime = models.NullBooleanField(null=True)
+    IsSeperateGate = models.NullBooleanField(null=True)
+    
+    HasBalcony = models.NullBooleanField(null=True)
+    CanCook = models.NullBooleanField(null=True)
+    HasTvCable = models.NullBooleanField(null=True)
+    IsQuiet = models.NullBooleanField(null=True)
+    HasPrivateToalet = models.NullBooleanField(null=True)
+    HasAirCondition = models.NullBooleanField(null=True)
+    
+    Description = models.TextField(null=True)
     #Address
     Phone = models.CharField(max_length=100)
     Address = models.CharField(max_length=200)
-    Ward = models.ForeignKey('Ward')
-    Coordinate = gismodels.PointField()
+    Ward = models.ForeignKey('Ward', null=True)
+    Coordinate = gismodels.PointField(null=True)
     objects = gismodels.GeoManager()
     
-class HouseImages(models.Model):
+class HouseImage(models.Model):
     Type = models.SmallIntegerField(choices=from_enum_choice(ImageType))
     House = models.ForeignKey('House')
-    Url = models.CharField(max_length=100)
+    Name = models.CharField(max_length=100)
     

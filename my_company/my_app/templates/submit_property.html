@@ -11,6 +11,8 @@
 
 						<form id="form-info" action="json/save-property/" method="post" enctype="multipart/form-data" onSubmit="return checkHouseInfo()">			
 						    <input type="hidden" id='result'/>
+						    <input type="hidden" name='lat'/>
+						    <input type="hidden" name='lon'/>
 						    {% csrf_token %}
 							<div class="box">
 								<div class="form-group">
@@ -92,18 +94,25 @@
 												<input type="text" name="house-phone" class="form-control" placeholder="Nhập số điện thoại liên hệ">
 											</div>
 										</div>
+										<div class="form-group">
+											<label>Diện tích (m2)</label>
+
+											<div>
+												<input type="text" name="house-size" class="form-control" placeholder="Diện tích nhà">
+											</div>
+										</div>
 									</div>
 								</div>
-
+							
 								<div class="col-sm-4">
 									<h3><br></h3>
 
 									<div class="box">
 										<div class="form-group">
-											<label>Giá cho thuê</label>
+											<label>Giá cho thuê (VND/tháng)</label>
 
 											<div>
-												<input type="text" name="house-price" class="form-control" placeholder="Vd: 1.000.000đ/tháng">
+												<input type="text" name="house-price" class="form-control" placeholder="Vd: 1.000.000">
 											</div>
 										</div>
 										<div class="form-group">
@@ -132,34 +141,32 @@
 
 							<div class="box clearfix">
 								<ul class="submit-property-list list-unstyled">
-									<li class="checkbox col-sm-3" name="house-air-condition"><label><input
-											type="checkbox">Có máy lạnh</label></li>
-									<li class="checkbox col-sm-3" name="house-balcony"><label><input
-											type="checkbox">Có ban công</label></li>
-									<li class="checkbox col-sm-3" name="house-free-time"><label><input
-											type="checkbox">Giờ giấc tự do</label></li>
-									<li class="checkbox col-sm-3" name="house-with-owner"><label><input
-											type="checkbox">Lối đi riêng với chủ</label></li>
-									<li class="checkbox col-sm-3" name="house-can-cook"><label><input
-											type="checkbox">Được nấu ăn</label></li>
-									<li class="checkbox col-sm-3" name="house-internet"><label><input
-											type="checkbox">Internet</label></li>
-									<li class="checkbox col-sm-3" name="house-tivi-cable"><label><input
-											type="checkbox">Truyền hình cáp</label></li>
-									<li class="checkbox col-sm-3" name="house-quiet"><label><input
-											type="checkbox">Khu yên tĩnh</label></li>
-									<li class="checkbox col-sm-3" name="house-interior"><label><input
-											type="checkbox">Có nội thất</label></li>
-									<li class="checkbox col-sm-3" name="house-same-toalet"><label><input
-											type="checkbox">Toalet riêng</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-air-condition">Có máy lạnh</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-balcony">Có ban công</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-free-time">Giờ giấc tự do</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-private-gate">Lối đi riêng với chủ</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-can-cook">Được nấu ăn</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-internet">Internet</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-tivi-cable">Truyền hình cáp</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-quiet">Khu yên tĩnh</label></li>
+									<li class="checkbox col-sm-3"><label><input
+											type="checkbox" name="house-interior">Có nội thất</label></li>
+									<li class="checkbox col-sm-3">
+										<label><input type="checkbox" name="house-private-toalet">Toalet riêng</label>
+									</li>
 								</ul>
 							</div>
 							<!-- /.box -->
 							<h3>Hình ảnh</h3>
 							<div class="box">
-								<div class="form-group">
-									<input type="file" id="house-image-1">
-								</div>
 								<div class="form-group"><input type="file" name="file-1"></div>
 								<div class="form-group"><input type="file" name="file-2"></div>
 								<div class="form-group"><input type="file" name="file-3"></div>
@@ -192,14 +199,35 @@
 <script type="text/javascript">
 
 function checkHouseInfo() {
-	alert("Thank you for your check!");
+	//alert("Thank you for your check!");
 	return true;
 }
 
-$(document).ready(function() { 
-	$('#form-info').ajaxForm(function() { 
-        alert("Thank you for your comment!"); 
-    }); 
+$(document).ready(function() {
+	var ward = '';
+	var district = '';
+	if ($('input[name=ward]').val() != "")
+		ward = $('input[name=ward]').find(':selected').text();
+	
+	if ($('input[name=district]').val() != "")
+		district = $('input[name=district]').find(':selected').text();
+	
+	var address = $('input[name=house-address]').val() + ', ' + ward + ', ' + district + ', Ho Chi Minh, Vietnam';
+	var geocode_request = {'address': address};
+	geocoder.geocode(geocode_request, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+	        
+	        $('input[name=lat]').val(results[0].geometry.location.k);
+	        $('input[name=lon]').val(results[0].geometry.location.A);
+	        
+	      } else {
+	    	  
+	      }
+
+		$('#form-info').ajaxForm(function() { 
+		    alert("Đã gửi thông tin"); 
+		}); 
+	});
 });
 </script>
 {% endblock %}

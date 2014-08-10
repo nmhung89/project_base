@@ -152,4 +152,6 @@ LOGGING = {
     }
 }
 
-GEOS_LIBRARY_PATH = 'C:/OSGeo4W/bin/geos_c.dll'
+#GEOS_LIBRARY_PATH = 'C:/OSGeo4W/bin/geos_c.dll'
+
+UPLOADED_FILES = MEDIA_ROOT + 'uploaded-files/'

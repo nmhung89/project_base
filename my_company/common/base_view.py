@@ -31,6 +31,7 @@ class BaseJsonAjaxView(View):
             func = self.actions().get(action)
             data = func(request, *args, **kwargs)
         except Exception, ex:
+            raise
             data = {'Code': -1, 'Message': str(ex)}
         if data.get('Code', '') == '' and data.get('Message', '') == '':
             data['Code'] = 1

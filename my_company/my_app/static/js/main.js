@@ -8,7 +8,7 @@ $('.house-search').click(function() {
 	if (parent.find('.ward').val() != "")
 		ward = parent.find('.ward').find(':selected').text();
 	if (parent.find('.district').val() != "")
-		ward = parent.find('.district').find(':selected').text();
+		district = parent.find('.district').find(':selected').text();
 	
 	var address = parent.find('.address').val() + ', ' + ward + ', ' + district + ', Ho Chi Minh, Vietnam';
 	var geocode_request = {'address': address};
