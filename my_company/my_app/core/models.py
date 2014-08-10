@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 
 class HouseType(object):
     (CHUNG_CU, NHA_NGUYEN_CAN, NHA_TRO) = range(3)
-    choices = [(CHUNG_CU, 'Chung cư'),
-               (NHA_NGUYEN_CAN, 'Nhà nguyên căn'),
-               (NHA_TRO, 'Phòng trọ'),]
+    choices = [(CHUNG_CU, u'Chung cư'),
+               (NHA_NGUYEN_CAN, u'Nhà nguyên căn'),
+               (NHA_TRO, u'Phòng trọ'),]
 
 class HouseStatus(object):
     (CHUA_THUE, DA_THUE, KHACH_WEB_THUE) = range(3)
@@ -63,6 +63,7 @@ class House(models.Model):
     SourceRef = models.CharField(max_length=200, null=True)
     Broker = models.ForeignKey('Broker', null=True)
     Staff = models.ForeignKey('Staff', null=True)
+    Highlight = models.CharField(max_length=200)
     
     CreatedUser = models.ForeignKey(User, null=True)
     CreatedTime = models.DateTimeField(auto_now_add=True)
@@ -94,11 +95,15 @@ class House(models.Model):
     Phone = models.CharField(max_length=100)
     Address = models.CharField(max_length=200)
     Ward = models.ForeignKey('Ward', null=True)
+    District = models.ForeignKey('District', null=True)
     Coordinate = gismodels.PointField(null=True)
     objects = gismodels.GeoManager()
     
 class HouseImage(models.Model):
     Type = models.SmallIntegerField(choices=from_enum_choice(ImageType))
-    House = models.ForeignKey('House')
+    House = models.ForeignKey('House', related_name='images')
     Name = models.CharField(max_length=100)
     
+class Message(models.Model):
+    Content = models.TextField()
+    CreatedTime = models.DateTimeField(auto_now_add=True)

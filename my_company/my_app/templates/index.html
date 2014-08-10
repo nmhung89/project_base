@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block style %}
+.order_by a { cursor: pointer; }
+{% endblock %}
+
 {% block main-wrapper %}
 <div id="main-wrapper">
 	<div id="main">
@@ -18,12 +22,13 @@
 									class="col-sm-4 col-sm-offset-8 col-md-3 col-md-offset-10 map-navigation-positioning">
 									<div class="map-navigation-wrapper">
 										<div class="map-navigation">
-											<div>
+											<!-- <div><button class="pull-right" id="hide_search_map">Thu gọn</button></div> -->
+											<div id="div-search-map">
 												<div class="form-group col-sm-12">
 													<!-- <label>Country</label> -->
 
 													<div class="select-wrapper">
-														<select id="select-country"
+														<select id="select-type"
 															class="form-control house-type">
 															<option value="">Chọn loại nhà muốn thuê</option> 
 															{% for item in HouseTypes %}
@@ -39,20 +44,8 @@
 													<!-- <label>Location</label> -->
 
 													<div class="select-wrapper">
-														<select id="select-location" class="form-control district">
+														<select id="select-district" class="form-control district">
 															<option value="">Chọn quận/huyện</option>
-														</select>
-													</div>
-													<!-- /.select-wrapper -->
-												</div>
-												<!-- /.form-group -->
-
-												<div class="form-group col-sm-12">
-													<!-- <label>Sublocation</label> -->
-
-													<div class="select-wrapper">
-														<select id="select-sublocation" class="form-control ward">
-															<option value="">Chọn phường</option>
 														</select>
 													</div>
 													<!-- /.select-wrapper -->
@@ -62,7 +55,7 @@
 												<div class="form-group col-sm-12">
 													<!-- <label>Property Type</label> -->
 
-													<input type="text" class="form-control address"
+													<input type="text" class="form-control address" id="select-address"
 														placeholder="Nhập địa điểm">
 												</div>
 												<!-- /.form-group -->
@@ -71,17 +64,17 @@
 													<!-- <label>Sublocation</label> -->
 
 													<div class="select-wrapper">
-														<select id="select-sublocation"
+														<select id="select-radius"
 															class="form-control radius">
 															<option value="">Chọn bán kính</option>
-															<option value="">1km</option>
-															<option value="">2km</option>
-															<option value="">3km</option>
-															<option value="">5km</option>
-															<option value="">10km</option>
-															<option value="">20km</option>
-															<option value="">30km</option>
-															<option value="">50km</option>
+															<option value="1">1km</option>
+															<option value="2">2km</option>
+															<option value="3">3km</option>
+															<option value="5">5km</option>
+															<option value="10">10km</option>
+															<option value="20">20km</option>
+															<option value="30">30km</option>
+															<option value="50">50km</option>
 														</select>
 													</div>
 													<!-- /.select-wrapper -->
@@ -90,21 +83,21 @@
 
 												<div class="form-group col-sm-6">
 													<!-- <label>Giá tối thiểu</label> -->
-													<input type="text" class="form-control min-price"
+													<input type="text" class="form-control min-price" id="min-price"
 														placeholder="Giá tối thiểu">
 												</div>
 												<!-- /.form-group -->
 
 												<div class="form-group col-sm-6">
 													<!-- <label>Price To</label> -->
-													<input type="text" class="form-control max-price"
+													<input type="text" class="form-control max-price" id="max-price"
 														placeholder="Giá tối đa">
 												</div>
 												<!-- /.form-group -->
 
 												<div class="form-group col-sm-12">
-													<button
-														class="btn btn-primary btn-inversed btn-block house-search">
+													<button class="btn btn-success btn-block house-search" id="id_map_search">
+													<i class="fa fa-search" style="margin-right: 5px;"></i>
 														Tìm kiếm <em class='rightImage'></em>
 													</button>
 												</div>
@@ -142,483 +135,33 @@
 					<div class="block-content-inner">
 						<h2 class="center">NHÀ ĐANG CHO THUÊ</h2>
 
-						<ul class="properties-filter mh-properties-filter">
-							<li><strong>Tìm theo: </strong></li>
-							<li><select class="house_type">
-									<option>Loại nhà</option> {% for item in HouseTypes %}
-									<option value="{{item.0}}">{{item.1}}</option> {% endfor %}
-							</select></li>
+				<!-- 		<ul class="properties-filter mh-properties-filter">
+							<li><strong>Lọc theo: </strong></li>
 							<li><select class="district"><option>Quận/Huyện</option></select></li>
-							<li><select class="ward"><option>Phường/Xã</option></select></li>
 							<li><select><option>Mức giá</option></select></li>
-							<li><select><option>Địa điểm</option></select></li>
-							<li><select><option>Bán kính</option></select></li>
-							<li><button
-									class="btn btn-primary btn-inversed btn-block house-search">
-									Tìm kiếm <em class='rightImage'></em>
-								</button></li>
-						</ul>
+						</ul> -->
 						<ul class="properties-filter mh-properties-filter">
 							<li><strong>Sắp xếp theo: </strong></li>
-							<li class="selected"><a href="#" data-filter="*"><span>Mới
+							<li class="order_by selected" order_by="-CreatedTime"><a><span>Mới
 										nhất</span></a></li>
-							<li><a href="#" data-filter="*"><span>Gần nhất</span></a></li>
-							<li><a href="#" data-filter=".property-featured"><span>Giá
+							<li class="order_by" order_by="distance"><a><span>Gần nhất</span></a></li>
+							<li class="order_by" order_by="Price"><a><span>Giá
 										thấp nhất</span></a></li>
-							<li><a href="#" data-filter=".property-rent"><span>Giá
+							<li class="order_by" order_by="-Price"><a><span>Giá
 										cao nhất</span></a></li>
-							<li><a href="#" data-filter=".property-sale"><span>Diện
+							<li class="order_by" order_by="Size"><a><span>Diện
 										tích nhỏ nhất</span></a></li>
-							<li><a href="#" data-filter=".property-sale"><span>Diện
+							<li class="order_by" order_by="-Size"><a><span>Diện
 										tích lớn nhất</span></a></li>
 						</ul>
 						<!-- /.property-filter -->
 
 						<div class="properties-items">
-							<div class="row">
-								<div class="property-item property-featured col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">Emerson Street</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Kingman Park</a>
-											</h4>
-
-											<div class="property-box-label property-box-label-primary">Rent</div>
-											<!-- /.property-box-label -->
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 430 000</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/8.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>213</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
-
-								<div class="property-item property-rent col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">West Side</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Brooklyn</a>
-											</h4>
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 1200 / month</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/11.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>2</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>292</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>1</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
-
-								<div class="property-item property-sale col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">Culver Blvd</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Civic Betterment</a>
-											</h4>
-
-											<div class="property-box-label">Sale</div>
-											<!-- /.property-box-label -->
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 299 000</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/7.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>2</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>222</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
-
-								<div class="property-item property-rent col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">Jeopardy Ln</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Silicon Valley, SA</a>
-											</h4>
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 299 000</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/4.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>233</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>2</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
+							<div class="row" id="house_results">
+								
 							</div>
 							<!-- /.row -->
 
-							<div class="row">
-								<div class="property-item property-featured col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">Bedford Ave</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Manhattan</a>
-											</h4>
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 145 000</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/12.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>1</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>203</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
-
-								<div class="property-item property-sale col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">South St</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Palo Alto, SA</a>
-											</h4>
-
-											<div class="property-box-label property-box-label-primary">Rent</div>
-											<!-- /.property-box-label -->
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 145 000</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/10.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>2</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>1</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>273</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-sm-3">
-													<strong>1</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
-
-								<div class="property-item property-rent col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">Evergreen Tr</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Civic Betterment</a>
-											</h4>
-
-											<div class="property-box-label property-box-label-primary">Rent</div>
-											<!-- /.property-box-label -->
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 350 000</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/3.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>1</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>297</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>3</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
-
-								<div class="property-item property-sale col-sm-6 col-md-3">
-									<div class="property-box">
-										<div class="property-box-inner">
-											<h3 class="property-box-title">
-												<a href="/detail/">Jefferson Blvd</a>
-											</h3>
-											<h4 class="property-box-subtitle">
-												<a href="/detail/">Kingman Park</a>
-											</h4>
-
-											<div class="property-box-label">Sale</div>
-											<!-- /.property-box-label -->
-
-											<div class="property-box-picture">
-												<div class="property-box-price">$ 350 000</div>
-												<!-- /.property-box-price -->
-												<div class="property-box-picture-inner">
-													<a href="/detail/" class="property-box-picture-target">
-														<img src="/static/assets/img/tmp/properties/medium/6.jpg"
-														alt="">
-													</a>
-													<!-- /.property-box-picture-target -->
-												</div>
-												<!-- /.property-picture-inner -->
-											</div>
-											<!-- /.property-picture -->
-
-											<div class="property-box-meta">
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>1</strong> <span>Baths</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>2</strong> <span>Beds</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>257</strong> <span>Area</span>
-												</div>
-												<!-- /.col-sm-3 -->
-
-												<div class="property-box-meta-item col-xs-3 col-sm-3">
-													<strong>2</strong> <span>Garages</span>
-												</div>
-												<!-- /.col-sm-3 -->
-											</div>
-											<!-- /.property-box-meta -->
-										</div>
-										<!-- /.property-box-inner -->
-									</div>
-									<!-- /.property-box -->
-								</div>
-								<!-- /.property-item -->
-							</div>
-							<!-- /.row -->
 						</div>
 						<!-- /.properties-items -->
 
@@ -636,4 +179,66 @@
 	<!-- /#main -->
 </div>
 <!-- /#main-wrapper -->
+
+
+<div id="result_template" style="display:none;">
+<div class="property-item property-featured col-sm-6 col-md-3">
+	<div class="property-box">
+		<div class="property-box-inner">
+			<h3 class="property-box-title">
+				<a href="{link}">{street}</a>
+			</h3>
+			<h4 class="property-box-subtitle">
+				<a href="{link}">{district}</a>
+			</h4>
+
+			<div class="property-box-label property-box-label-primary">{type}</div>
+			<!-- /.property-box-label -->
+
+			<div class="property-box-picture">
+				<div class="property-box-price">{price}</div>
+				<!-- /.property-box-price -->
+				<div class="property-box-picture-inner">
+					<a href="{link}" class="property-box-picture-target">
+						<img src="{img}"
+						alt="">
+					</a>
+					<!-- /.property-box-picture-target -->
+				</div>
+				<!-- /.property-picture-inner -->
+			</div>
+			<!-- /.property-picture -->
+
+			<div class="property-box-meta">
+				<div class="property-box-meta-item col-xs-4 col-sm-4">
+					<strong>{size}m<sup>2</sup></strong> <span>Diện tích</span>
+				</div>
+				<!-- /.col-sm-3 -->
+
+				<div class="property-box-meta-item col-xs-4 col-sm-4">
+					<strong>{bedroom}</strong> <span>Phòng ngủ</span>
+				</div>
+				<!-- /.col-sm-3 -->
+
+				<div class="property-box-meta-item col-xs-4 col-sm-4">
+					<strong>{toalet}</strong> <span>Toalet</span>
+				</div>
+				<!-- /.col-sm-3 -->
+			</div>
+			<!-- /.property-box-meta -->
+		</div>
+		<!-- /.property-box-inner -->
+	</div>
+	<!-- /.property-box -->
+</div>
+<!-- /.property-item -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+var detail = false;
+var search_params = {};
+searchHouses({'order_by': '-CreatedTime'}, false);
+</script>
 {% endblock %}

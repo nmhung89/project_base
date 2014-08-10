@@ -2,7 +2,7 @@ $(window).load(function() {
     /***********************************************************
      * ISOTOPE
      ***********************************************************/
-    var isotope_works = $('.properties-items');
+/*    var isotope_works = $('.properties-items');
     isotope_works.isotope({
         'itemSelector': '.property-item'
     });
@@ -14,7 +14,7 @@ $(window).load(function() {
         var selector = $(this).attr('data-filter');
         isotope_works.isotope({ filter: selector });
         return false;
-    });
+    });*/
 });
 
 $(document).ready(function() {
@@ -84,14 +84,7 @@ $(document).ready(function() {
     }
     var icons = new Array('apartment', 'building-area', 'condo', 'cottage', 'family-house', 'flatblocks', 'flatblocks2', 'house', 'single-home', 'villa');
 
-    // generate random content for properties map
-    for (var i=0; i < 50; i++) {
-        var icon_name = icons[Math.floor(Math.random()*icons.length)];
-        locations.push(get_gps_ranges(10.788012, 106.659344, 0.08, 0.60));
-        contents.push('<div class="infobox"><div class="infobox-header"><h3 class="infobox-title"><a href="#">30 Miller Pl Apt 3</a></h3><h4 class="infobox-subtitle"><a href="#">San Francisco, CA</a></h4></div><div class="infobox-picture"><a href="#"><img src="/static/assets/img/tmp/properties/medium/'+Math.floor((Math.random()*10)+1) +'.jpg" alt=""></a><div class="infobox-price">$ 13,000</div></div></div>');
-        types.push('apartment');
-        images.push('<img src="/static/assets/img/icons/' + icon_name + '.png" alt="">');
-    }
+//    loadAllHouse();
 
     if ($('#map').length !== 0) {
         var map = $('#map').aviators_map({
@@ -101,13 +94,15 @@ $(document).ready(function() {
             images: images,
             transparentMarkerImage: '/static/assets/img/marker-transparent.png',
             transparentClusterImage: '/static/assets/img/clusterer-transparent.png',
-            zoom: 11,
+            zoom: 13,
             center: {
                 latitude: 10.788012,
                 longitude:  106.659344
             },
             enableGeolocation: false,
-            styles: styles[6]
+            styles: styles[6],
+            filterForm: '#id_map_search'
+//            callback: loadAllHouse
         });
     }
 
@@ -116,16 +111,16 @@ $(document).ready(function() {
      ***********************************************************/
     if ($('#map-property').length !== 0) {
         var map = $('#map-property').aviators_map({
-            locations: new Array([40.67, -73.94]),
+            locations: new Array([lat, lon]),
             contents: new Array(['<div class="infobox"><div class="infobox-header"><h3 class="infobox-title"><a href="#">30 Miller Pl Apt 3</a></h3><h4 class="infobox-subtitle"><a href="#">San Francisco, CA</a></h4></div><div class="infobox-picture"><a href="#"><img src="/static/assets/img/tmp/properties/medium/' + Math.floor((Math.random()*10)+1) + '.jpg" alt=""></a><div class="infobox-price">$ 13,000</div></div></div>']),
-            types: types,
-            images: images,
+            types: [type_detail],
+            images: [type_image],
             transparentMarkerImage: 'assets/img/marker-transparent.png',
             transparentClusterImage: 'assets/img/clusterer-transparent.png',
-            zoom: 11,
+            zoom: 13,
             center: {
-                latitude: 40.67,
-                longitude: -73.94
+                latitude: lat,
+                longitude: lon
             },
             enableGeolocation: false,
             styles: styles[6]
@@ -179,3 +174,32 @@ $(document).ready(function() {
         $(this).addClass('active');
     });
 });
+
+
+function loadAllHouse() {
+	//get all houses
+    var distance_ranges = [[0, 10], [10, 20], [20, 30], [30, 40], [40, 50], [50, 100]];
+    var loc_saigon = [10.771580, 106.698390];
+    for (var i = 0; i < distance_ranges.length; i++) {
+    	$.ajax({
+			type: "GET",
+			url: "/json/get-house/",
+			data:{ 
+					'lat': loc_saigon[0],
+					'lon': loc_saigon[1],
+					'radius': distance_ranges[i][1],
+					'min_radius': distance_ranges[i][0]
+			},
+			headers: {'X-CSRFToken': csrftoken}
+		})
+		.done(function(response) {
+			var data = response.data;
+			$('#map').aviators_map('addMarkers', {
+				locations: eval(data.locations),
+				types    : eval(data.types),
+				contents : eval(data.contents),
+				images	 : eval(data.images)
+			});
+		});
+    }	
+}

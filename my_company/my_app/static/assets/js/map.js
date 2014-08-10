@@ -30,22 +30,56 @@
 			google.maps.event.addDomListener(window, 'load', loadMap);
 
 			if (settings.filterForm && $(settings.filterForm).length !== 0) {
-				$(settings.filterForm).submit(function (e) {
-					var form = $(this);
-					var action = $(this).attr('action');
-
-					$.ajax({
-						type   : 'GET',
-						url    : action,
-						data   : form.serialize(),
-						success: function (data) {
-							element.aviators_map('removeMarkers');
-							element.aviators_map('addMarkers', {
-								locations: eval(data.locations),
-								types    : eval(data.types),
-								contents : eval(data.contents)
-							});
-						}
+				$(settings.filterForm).click(function (e) {
+					var type = $('#select-type').val();
+					var district = $('#select-district').find(':selected').text();
+					var address = $('#select-address').val();
+					var radius = $('#select-radius').val();
+					var min_price = $('#min-price').val();
+					var max_price = $('#max-price').val();
+					
+					if (address == '' && district == "Chọn quận/huyện")
+						district = 'Quận 1';
+					address = address + ',' + district + ', Ho Chi Minh, Vietnam';
+					var geocode_request = {'address': address};
+					
+					geocoder.geocode(geocode_request, function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							map.setCenter(results[0].geometry.location);
+							if (radius == '')
+								radius = 5;
+							else
+								radius = parseInt(radius);
+							add_center_marker(results[0].geometry.location);
+							if (center_circle != null)
+								center_circle.setMap(null);
+							center_circle = new google.maps.Circle({radius: radius*1000, center: results[0].geometry.location,
+																map: map,
+																fillColor: '#AAAAAA',
+																fillOpacity: 0.25,
+																strokeColor: '#AAAAAA',
+																strokeOpacity: 0.25,
+																});
+							map.fitBounds(center_circle.getBounds());
+//					        map.fitBounds(results[0].geometry.viewport);
+							
+					        var lat = results[0].geometry.location.lat();
+					        var lon =  results[0].geometry.location.lng();
+					        var params = { 
+		        					'type': type,
+		        					'lat': lat,
+		        					'lon': lon,
+		        					'min_price': min_price,
+		        					'max_price': max_price,
+		        					'radius': radius,
+		        					'order_by': '-CreatedTime'
+		        			}; 
+					        
+					        searchHouses(params, true);
+					        
+					      } else {
+					    	  alert("Không thể xác định vị trí tìm kiếm " + status);
+					      }
 					});
 
 					e.preventDefault();
@@ -66,13 +100,13 @@
 				markers[i].setMap(null);
 			}
 
-			markerCluster.clearMarkers();
+/*			markerCluster.clearMarkers();
 
 			$.each(clustersOnMap, function (index, cluster) {
 				cluster.cluster.close();
 			});
 
-			clusterListener.remove();
+			clusterListener.remove();*/
 		},
 
 		addMarkers: function (options) {
@@ -80,6 +114,7 @@
 			settings.locations = options.locations;
 			settings.contents = options.contents;
 			settings.types = options.types;
+			settings.images = options.images;
 
 			renderElements();
 		}
@@ -137,6 +172,9 @@
 
 		map = new google.maps.Map($(element)[0], mapOptions);
 
+		if (detail != true)
+			loadAllHouse();
+			
 		if (settings.mapMoveCenter) {
 			map.panBy(settings.mapMoveCenter.x, settings.mapMoveCenter.y)
 		}
@@ -306,7 +344,7 @@
 					if (curMarker.infobox.isOpen === false) {
 						curMarker.infobox.open(map, this);
 						curMarker.infobox.isOpen = true;
-						map.setCenterWithOffset(curMarker.getPosition(), 100, -120);
+						map_recenter(curMarker.getPosition(), 100, -120);
 					} else {
 						curMarker.infobox.close();
 						curMarker.infobox.isOpen = false;
@@ -315,87 +353,113 @@
 			}
 		});
 
-		markerCluster = new MarkerClusterer(map, markers, {
-            gridSize: 50,
-			styles: [
-				{
-					height   : 48,
-					url      : settings.transparentClusterImage,
-					width    : 48,
-					textColor: 'transparent'
-				}
-			]
-		});
+//		markerCluster = new MarkerClusterer(map, markers, {
+//            gridSize: 50,
+//			styles: [
+//				{
+//					height   : 48,
+//					url      : settings.transparentClusterImage,
+//					width    : 48,
+//					textColor: 'transparent'
+//				}
+//			]
+//		});
 
-		clustersOnMap = new Array();
-
-		clusterListener = google.maps.event.addListener(markerCluster, 'clusteringend', function (clusterer) {
-			var availableClusters = clusterer.getClusters();
-			var activeClusters = new Array();
-
-			$.each(availableClusters, function (index, cluster) {
-				if (cluster.getMarkers().length > 1) {
-					activeClusters.push(cluster);
-				}
-			});
-
-			$.each(availableClusters, function (index, cluster) {
-				if (cluster.getMarkers().length > 1) {
-					var val = isClusterOnMap(clustersOnMap, cluster);
-
-					if (val !== false) {
-						val.cluster.setContent('<div class="clusterer"><div class="clusterer-inner">' + cluster.getMarkers().length + '</div></div>');
-						val.markers = cluster.getMarkers();
-						$.each(cluster.getMarkers(), (function (index, marker) {
-							if (marker.marker.isHidden == false) {
-								marker.marker.isHidden = true;
-								marker.marker.close();
-							}
-						}));
-					} else {
-						addClusterOnMap(cluster);
-					}
-				} else {
-					// Show all markers without the cluster
-					$.each(cluster.getMarkers(), function (index, marker) {
-						if (marker.marker.isHidden == true) {
-							marker.marker.open(map, this);
-							marker.marker.isHidden = false;
-						}
-					});
-
-					// Remove old cluster
-					$.each(clustersOnMap, function (index, cluster_on_map) {
-						if (cluster !== undefined && cluster_on_map !== undefined) {
-							if (cluster_on_map.getCenter() == cluster.getCenter()) {
-								// Show all cluster's markers/
-								cluster_on_map.cluster.close();
-								clustersOnMap.splice(index, 1);
-							}
-						}
-					});
-				}
-			});
-
-			var newClustersOnMap = new Array();
-
-			$.each(clustersOnMap, function (index, clusterOnMap) {
-				var remove = true;
-
-				$.each(availableClusters, function (index2, availableCluster) {
-					if (availableCluster.getCenter() == clusterOnMap.getCenter()) {
-						remove = false;
-					}
-				});
-
-				if (!remove) {
-					newClustersOnMap.push(clusterOnMap);
-				} else {
-					clusterOnMap.cluster.close();
-				}
-			});
-
-			clustersOnMap = newClustersOnMap;
-		});
+//		clustersOnMap = new Array();
+//
+//		clusterListener = google.maps.event.addListener(markerCluster, 'clusteringend', function (clusterer) {
+//			var availableClusters = clusterer.getClusters();
+//			var activeClusters = new Array();
+//
+//			$.each(availableClusters, function (index, cluster) {
+//				if (cluster.getMarkers().length > 1) {
+//					activeClusters.push(cluster);
+//				}
+//			});
+//
+//			$.each(availableClusters, function (index, cluster) {
+//				if (cluster.getMarkers().length > 1) {
+//					var val = isClusterOnMap(clustersOnMap, cluster);
+//
+//					if (val !== false) {
+//						val.cluster.setContent('<div class="clusterer"><div class="clusterer-inner">' + cluster.getMarkers().length + '</div></div>');
+//						val.markers = cluster.getMarkers();
+//						$.each(cluster.getMarkers(), (function (index, marker) {
+//							if (marker.marker.isHidden == false) {
+//								marker.marker.isHidden = true;
+//								marker.marker.close();
+//							}
+//						}));
+//					} else {
+//						addClusterOnMap(cluster);
+//					}
+//				} else {
+//					// Show all markers without the cluster
+//					$.each(cluster.getMarkers(), function (index, marker) {
+//						if (marker.marker.isHidden == true) {
+//							marker.marker.open(map, this);
+//							marker.marker.isHidden = false;
+//						}
+//					});
+//
+//					// Remove old cluster
+//					$.each(clustersOnMap, function (index, cluster_on_map) {
+//						if (cluster !== undefined && cluster_on_map !== undefined) {
+//							if (cluster_on_map.getCenter() == cluster.getCenter()) {
+//								// Show all cluster's markers/
+//								cluster_on_map.cluster.close();
+//								clustersOnMap.splice(index, 1);
+//							}
+//						}
+//					});
+//				}
+//			});
+//
+//			var newClustersOnMap = new Array();
+//
+//			$.each(clustersOnMap, function (index, clusterOnMap) {
+//				var remove = true;
+//
+//				$.each(availableClusters, function (index2, availableCluster) {
+//					if (availableCluster.getCenter() == clusterOnMap.getCenter()) {
+//						remove = false;
+//					}
+//				});
+//
+//				if (!remove) {
+//					newClustersOnMap.push(clusterOnMap);
+//				} else {
+//					clusterOnMap.cluster.close();
+//				}
+//			});
+//
+//			clustersOnMap = newClustersOnMap;
+//		});
 	}
 })(jQuery);
+
+
+function map_recenter(latlng,offsetx,offsety) {
+    var point1 = map.getProjection().fromLatLngToPoint(
+        (latlng instanceof google.maps.LatLng) ? latlng : map.getCenter()
+    );
+    var point2 = new google.maps.Point(
+        ( (typeof(offsetx) == 'number' ? offsetx : 0) / Math.pow(2, map.getZoom()) ) || 0,
+        ( (typeof(offsety) == 'number' ? offsety : 0) / Math.pow(2, map.getZoom()) ) || 0
+    );  
+    map.setCenter(map.getProjection().fromPointToLatLng(new google.maps.Point(
+        point1.x - point2.x,
+        point1.y + point2.y
+    )));
+}
+var center_marker = null;
+var center_circle = null;
+
+function add_center_marker(location) {
+	if (center_marker != null)
+		center_marker.setMap(null);
+	center_marker = new google.maps.Marker({
+	      position: location,
+	      map: map
+	});  
+}

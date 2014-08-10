@@ -170,6 +170,8 @@ ClusterIcon.prototype.onAdd = function () {
 					if (mz !== null && (mc.getMap().getZoom() > mz)) {
 						mc.getMap().setZoom(mz + 1);
 					}
+
+					mc.getMap().setZoom(mc.getMap().getZoom() - 1);
 				}, 100);
 			}
 

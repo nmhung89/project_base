@@ -27,6 +27,10 @@
 									</div>
 								</div>
 								<div class="form-group">
+									<label>Mô tả nhà ngắn gọn trong 40 ký tự</label>
+									<input name="house-highlight" class="form-control" placeholder="Vd: Nhà có 2 phòng ngủ / Phòng trọ yên tĩnh giá rẻ">
+								</div>
+								<div class="form-group">
 									<label>Mô tả nhà</label>
 									<textarea name="house-description" class="form-control" rows="6"></textarea>
 								</div>
@@ -198,12 +202,7 @@
 <script src="http://malsup.github.com/jquery.form.js"></script> 
 <script type="text/javascript">
 
-function checkHouseInfo() {
-	//alert("Thank you for your check!");
-	return true;
-}
-
-$(document).ready(function() {
+function getHousePosition() {
 	var ward = '';
 	var district = '';
 	if ($('input[name=ward]').val() != "")
@@ -217,17 +216,29 @@ $(document).ready(function() {
 	geocoder.geocode(geocode_request, function(results, status) {
 		if (status == google.maps.GeocoderStatus.OK) {
 	        
-	        $('input[name=lat]').val(results[0].geometry.location.k);
-	        $('input[name=lon]').val(results[0].geometry.location.A);
-	        
+	        $('input[name=lat]').val(results[0].geometry.location.lat());
+	        $('input[name=lon]').val(results[0].geometry.location.lng()); 
 	      } else {
 	    	  
-	      }
-
-		$('#form-info').ajaxForm(function() { 
-		    alert("Đã gửi thông tin"); 
-		}); 
+	      }		
 	});
+}
+
+$('input[name=house-address]').focusout(function() {
+	getHousePosition();
+});
+
+function checkHouseInfo() {
+	//alert("Thank you for your check!");
+	return true;
+}
+
+$(document).ready(function() {
+	$('#form-info').ajaxForm(function() {
+		
+	    alert("Đã gửi thông tin"); 
+	}); 
+	
 });
 </script>
 {% endblock %}

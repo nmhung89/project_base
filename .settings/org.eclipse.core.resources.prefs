@@ -1,10 +1,14 @@
 eclipse.preferences.version=1
 encoding//my_company/common/api_handler.py=utf-8
+encoding//my_company/common/utils.py=utf-8
 encoding//my_company/my_app/core/enums.py=utf-8
 encoding//my_company/my_app/core/models.py=utf-8
+encoding//my_company/my_app/gui/home/views.py=utf-8
 encoding//my_company/my_app/scripts/__init__.py=utf-8
 encoding//my_company/my_app/scripts/import_district_ward.py=utf-8
+encoding//my_company/my_app/static/assets/js/map.js=UTF-8
 encoding//my_company/my_app/static/js/data.js=UTF-8
 encoding//my_company/my_app/static/js/main.js=UTF-8
 encoding//my_company/my_app/templates/index.html=UTF-8
+encoding//my_company/my_app/templates/property_detail.html=UTF-8
 encoding//my_company/my_app/templates/submit_property.html=UTF-8

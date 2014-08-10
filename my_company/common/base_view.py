@@ -5,14 +5,14 @@ import simplejson
 
 class BaseTemplateView(TemplateView):
     
-    def get_data(self):
+    def get_data(self, *kwargs):
         data = {}
         return data
     
     def get_context_data(self, **kwargs):
         context = super(BaseTemplateView, self).get_context_data(**kwargs)
         try:
-            data = self.get_data()
+            data = self.get_data(**kwargs)
             context.update(data)
         except Exception, ex:
             #notify error message for admin by email or save into database
@@ -30,6 +30,8 @@ class BaseJsonAjaxView(View):
         try:
             func = self.actions().get(action)
             data = func(request, *args, **kwargs)
+            if data == None:
+                data = {}
         except Exception, ex:
             raise
             data = {'Code': -1, 'Message': str(ex)}

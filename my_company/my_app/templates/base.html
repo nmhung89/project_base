@@ -51,6 +51,8 @@ button .rightImage img {
 	width: 20px;
 	height: 20px;
 }
+{% block style%}
+{% endblock %}
 </style>
 <title>Tìm nhà trọ</title>
 </head>
@@ -110,7 +112,7 @@ button .rightImage img {
 							<p class="center no-margin">&copy; 2014 Ở Trọ . VN, All Right
 								reserved</p>
 
-							<div class="center">
+<!-- 							<div class="center">
 								<ul class="social">
 									<li><a href="#"><i class="fa fa-facebook"></i></a></li>
 									<li><a href="#"><i class="fa fa-twitter"></i></a></li>
@@ -122,8 +124,8 @@ button .rightImage img {
 									<li><a href="#"><i class="fa fa-vimeo-square"></i></a></li>
 									<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
 								</ul>
-								<!-- /.social -->
-							</div>
+								/.social
+							</div> -->
 							<!-- /.center -->
 						</div>
 						<!-- /.container -->
@@ -163,6 +165,7 @@ button .rightImage img {
 	<script type="text/javascript" src="/static/js/main.js"></script>
 	<script type="text/javascript" src="/static/js/data.js"></script>
 	<script type="text/javascript">
+	var geocoder = new google.maps.Geocoder();
 	function getCookie(name) {
 	    var cookieValue = null;
 	    if (document.cookie && document.cookie != '') {

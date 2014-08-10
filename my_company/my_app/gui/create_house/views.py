@@ -1,4 +1,5 @@
 import uuid
+import Image
 
 from django.conf import settings
 from django.contrib.gis.db import models as gismodels
@@ -8,7 +9,7 @@ from my_company.common.base_view import BaseTemplateView, BaseJsonAjaxView
 from my_company.my_app.core import models
 from my_company.my_app.core.models import House, HouseStatus, HouseSource,\
     HouseImage, ImageType
-
+from my_company.common import utils
 
 class CreateHouseView(BaseTemplateView):
     template_name = 'submit_property.html'
@@ -34,6 +35,7 @@ class CreateHouseAjaxView(BaseJsonAjaxView):
         electric_price = params.get('house-electric-price', '').strip()
         water_price = params.get('house-water-price', '').strip()
         size= params.get('house-size', '').strip()
+        highlight= params.get('house-highlight', '').strip()
         
         #boolean
         air_condition = True if params.get('house-air-condition', '') else False
@@ -54,6 +56,7 @@ class CreateHouseAjaxView(BaseJsonAjaxView):
         house.Type = htype
         house.Status = HouseStatus.CHUA_THUE
         house.Source = HouseSource.WEB
+        house.Highlight = highlight
         
         #Description
         house.Size = size
@@ -71,6 +74,7 @@ class CreateHouseAjaxView(BaseJsonAjaxView):
         house.Phone = phone
         house.Address = address
         house.Ward_id = ward
+        house.District_id = district
         house.Toalets = num_toalet
         house.HasAirCondition = air_condition
         house.HasBalcony = balcony
@@ -87,22 +91,48 @@ class CreateHouseAjaxView(BaseJsonAjaxView):
         
         for f in request.FILES:
             file_name = self._handle_uploaded_file(request.FILES[f])
-            house_image = HouseImage()
-            house_image.House = house
-            house_image.Type = ImageType.ORIGINAL
-            house_image.Name = file_name
-            house_image.save()
+            self._create_thumbs(file_name)
+            for _type in (ImageType.ORIGINAL, ImageType.LARGE, ImageType.SMALL):
+                house_image = HouseImage()
+                house_image.House = house
+                house_image.Type = _type
+                house_image.Name = file_name
+                house_image.save()
         
         return {'Message01': 'I am very well, thank you'}
     
     def _handle_uploaded_file(self, f):
         file_name = str(uuid.uuid4()) + '.' + f._name[-3:]
-        file_path = settings.UPLOADED_FILES + file_name
+        file_path = utils.get_image_path(file_name, ImageType.ORIGINAL)
         with open(file_path, 'wb+') as destination:
             for chunk in f.chunks():
                 destination.write(chunk)
         return file_name
-            
+    
+    def _get_ratio(self, org, dest):
+        r1 = float(dest[0]) / org[0]
+        r2 = float(dest[1]) / org[1]
+        return r1 if r1 < r2 else r2 
+    
+    def _create_thumbs(self, file_name):
+        org_path = utils.get_image_path(file_name)
+        #large = 840 x 500
+        #medium = 520 x 500
+        #small = 200 x 150
+        img = Image.open(org_path)
+        large_size = (840, 500)
+#         medium_size = (520, 500)
+        small_size = (200, 150)
+        large_ratio = self._get_ratio(img.size, large_size)
+#         medium_ratio = self._get_ratio(img.size(), medium_size)
+        small_ratio = self._get_ratio(img.size, small_size)
+        large_img = img.resize((int(img.size[0]*large_ratio), int(img.size[1]*large_ratio)))
+#         medium_img = img.resize((img.size()[0]*medium_ratio, img.size[1]*medium_ratio))
+        small_img = img.resize((int(img.size[0]*small_ratio), int(img.size[1]*small_ratio)))
+        large_img.save(utils.get_image_path(file_name, ImageType.LARGE))
+#         medium_img.save(utils.get_image_path(file_name, ImageType.MEDIUM))
+        small_img.save(utils.get_image_path(file_name, ImageType.SMALL))
+    
     def actions(self):
         handlers = {'save-property': self.save_house}
         return handlers
