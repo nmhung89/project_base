@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from my_company.my_app.gui.home.views import HomeView, HomeAjaxView
+from media_pop.key_mapping.gui.home.views import HomeView, HomeAjaxView
 
 
 urlpatterns = patterns('',

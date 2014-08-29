@@ -7,8 +7,8 @@
 </pydev_pathproperty>
 <pydev_variables_property name="org.python.pydev.PROJECT_VARIABLE_SUBSTITUTION">
 <key>DJANGO_MANAGE_LOCATION</key>
-<value>my_company/my_app/manage.py</value>
+<value>media_pop/key_mapping/manage.py</value>
 <key>DJANGO_SETTINGS_MODULE</key>
-<value>my_company.my_app.settings</value>
+<value>media_pop.key_mapping.settings</value>
 </pydev_variables_property>
 </pydev_project>
