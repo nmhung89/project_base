@@ -42,6 +42,7 @@ $('#id_enter_new_definition').click(function() {
 	  .done(function(data) {
 		  if (data.Code == 1) {
 			  $('#id_body_table').append('<tr><td>' + special_key + '</td><td>' + key_text + '</td><td>' + message + '</td></tr>');
+			  key_mapping[special_key + "_" + key] = message;
 		  }
 		  else {
 			  alert(data.Message);
