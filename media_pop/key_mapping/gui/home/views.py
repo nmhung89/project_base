@@ -14,7 +14,7 @@ class HomeView(BaseTemplateView):
         for item in data_query_set:
             key_mapping_dict['%s_%s' % (item.SpecialKey, item.Key)] = item.Message
         key_mapping_json = simplejson.dumps(key_mapping_dict)
-        keys = [(item, chr(item)) for item in range(ord('A'), ord('Z'))]
+        keys = [(item, chr(item)) for item in range(ord('A'), ord('Z') + 1)]
         return {'key_mapping': all_data,
                 'key_mapping_json': key_mapping_json,
                 'keys': keys,
