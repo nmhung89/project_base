@@ -1,6 +1,0 @@
-from django.conf.urls import patterns, include, url
-
-urlpatterns = patterns('',
-    url(r'^detail/$', include('my_company.my_app.gui.detail.urls')),
-    url(r'^', include('my_company.my_app.gui.home.urls')),
-)

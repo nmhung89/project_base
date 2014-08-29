@@ -25,10 +25,10 @@ class BaseJsonAjaxView(View):
         handlers = {}
         return handlers
     
-    def get_data(self, *args, **kwargs):
+    def get_data(self, request, *args, **kwargs):
         action = kwargs.get('action')
         try:
-            data = self.actions().get(action)(self, *args, **kwargs)
+            data = self.actions().get(action)(self, request, *args, **kwargs)
         except Exception, ex:
             data = {'Code': -1, 'Message': str(ex)}
         if data.get('Code', '') == '' and data.get('Message', '') == '':
@@ -36,22 +36,22 @@ class BaseJsonAjaxView(View):
             data['Message'] = 'Success'
         return data
     
-    def get(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         self.method = 'GET'
-        resp = self.get_data(*args, **kwargs)
+        resp = self.get_data(request, *args, **kwargs)
         return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
     
-    def post(self, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.method = 'POST'
-        resp = self.get_data()
+        resp = self.get_data(request, *args, **kwargs)
         return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
     
-    def put(self, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         self.method = 'PUT'
-        resp = self.get_data()
+        resp = self.get_data(request, *args, **kwargs)
         return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
     
-    def delete(self, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         self.method = 'DELETE'
-        resp = self.get_data()
+        resp = self.get_data(request, *args, **kwargs)
         return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
