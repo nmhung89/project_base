@@ -28,7 +28,7 @@ class BaseJsonAjaxView(View):
     def get_data(self, request, *args, **kwargs):
         action = kwargs.get('action')
         try:
-            data = self.actions().get(action)(self, request, *args, **kwargs)
+            data = self.actions().get(action)(request, *args, **kwargs)
         except Exception, ex:
             data = {'Code': -1, 'Message': str(ex)}
         if data.get('Code', '') == '' and data.get('Message', '') == '':
