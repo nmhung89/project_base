@@ -38,7 +38,7 @@ $('#id_enter_new_definition').click(function() {
 
 
 $('#id_body_table').on('click', 'tr', function() {
-	$('.active').removeClass('active');
+	$('#id_body_table').find('.active').removeClass('active');
 	$(this).addClass('active');
 	$('#id_special_key').selectpicker('val', $(this).find('.special_key').html());
     $('#id_key').selectpicker('val', $(this).find('.key').html());
