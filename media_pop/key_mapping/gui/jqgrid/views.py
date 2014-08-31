@@ -13,7 +13,7 @@ class HomeJqgridView(BaseTemplateView):
             key_mapping_dict['%s_%s' % (item.SpecialKey, item.Key)] = {'Message': item.Message, 
                                                                        'SpecialKey': item.SpecialKey, 
                                                                        'Key': item.Key, 
-                                                                       'KeyText': chr(item.Key)}
+                                                                       'KeyText': chr(int(item.Key))}
         key_mapping_json = simplejson.dumps(key_mapping_dict)
         key_options = ''
         special_key_options = ''
@@ -46,7 +46,7 @@ class HomeJqgridAjaxView(BaseJsonAjaxView):
         rows = []
         for item in data:
             rows.append({'id': item.pk,
-                         'cell': [item.SpecialKey, chr(item.Key), escape(item.Message)]
+                         'cell': [item.SpecialKey, chr(int(item.Key)), escape(item.Message)]
                          })
         return {"page": page,
                 "total": total/num + 1,

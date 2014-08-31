@@ -9,14 +9,14 @@ class HomeView(BaseTemplateView):
         #get all definition: because of little data, we get all definition in advance for faster lookup
         #if we have much data or other requirement, we will use ajax
         data_query_set = KeyMapping.objects.all()
-        all_data = [{'SpecialKey': item.SpecialKey, 'Key': chr(item.Key), 'KeyCode': item.Key, 'Message': item.Message} \
+        all_data = [{'SpecialKey': item.SpecialKey, 'Key': chr(int(item.Key)), 'KeyCode': item.Key, 'Message': item.Message} \
                     for item in data_query_set]
         key_mapping_dict = {}
         for item in data_query_set:
             key_mapping_dict['%s_%s' % (item.SpecialKey, item.Key)] = {'Message': item.Message, 
                                                                        'SpecialKey': item.SpecialKey, 
                                                                        'Key': item.Key, 
-                                                                       'KeyText': chr(item.Key)}
+                                                                       'KeyText': chr(int(item.Key))}
         key_mapping_json = simplejson.dumps(key_mapping_dict)
         keys = [(item, chr(item)) for item in range(ord('A'), ord('Z') + 1)]
         return {'key_mapping': all_data,
