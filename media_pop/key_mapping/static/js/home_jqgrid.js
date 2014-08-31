@@ -12,6 +12,7 @@ jQuery("#list").jqGrid({
    	rowList:[10,20,30],
    	pager: '#pager',
     viewrecords: true,
+    height: 'auto',
     caption:"Key Mapping"
 });
 
