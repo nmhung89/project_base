@@ -1,17 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Media pop test</title>
-	<link rel="stylesheet" href="/static/libs/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/static/libs/css/bootstrap-select.css">
-	<link rel="stylesheet" href="/static/libs/css/alertify.core.css">
-	<link rel="stylesheet" href="/static/libs/css/alertify.default.css">
-	<link rel="stylesheet" href="/static/css/main.css">
-</head>
-<body>
-	<div class="container-fluid" style="padding-top: 40px;">
-		<form class="form-inline" role="form">
+{% extends "base.html" %}
+
+{% block body %}
+		<form class="form-inline main" role="form">
 			<div class="form-group">
 				<select id="id_special_key" class="selectpicker" data-style="btn-warning">
 					<option value="">Select special key</option>
@@ -60,20 +50,16 @@
 		        </tbody>
 	      	</table>
 		</div>
-	</div>
-</body>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="/static/libs/js/bootstrap.min.js"></script>
-<script src="/static/libs/js/bootstrap-select.js"></script>
-<script src="/static/libs/js/alertify.js"></script>
-<script src="/static/libs/js/jquery.blockUI.js"></script>
+{% endblock %}
+
+{% block scripts %}
 <script src="/static/js/home.js"></script>
 <script type="text/javascript">
-var key_mapping = {{key_mapping_json|safe}};
 $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+$('#ul_home').addClass('active');
 $(document).ready(function(e) {
     $('.selectpicker').selectpicker();
     
 });
-
 </script>
+{% endblock %}

@@ -1,46 +1,3 @@
-$(document).keydown(function(e) {
-	var prefix = '';
-	var code = '';
-	if (e.ctrlKey) {
-		prefix = "CTRL";
-		e.preventDefault();
-	}
-	else if (e.altKey) {
-		prefix = "ALT";
-		e.preventDefault();
-	}
-	else 
-		return;
-	
-	if (e.keyCode < 65 || e.keyCode > 122)
-		return;
-	if (e.keyCode >= 97)
-		code = e.keyCode - 32;
-	else
-		code = e.keyCode;
-	var key = prefix + "_" + code;
-	var message = key_mapping[key];
-	if (message == undefined) {
-		alertify.confirm("<b>Opps!</b> It seems that you have not defined a message for your keys.<br/>" +
-				"Do you want to define them now?", function (e) {
-		    if (e) {
-		        $('#id_special_key').selectpicker('val', prefix);
-		        $('#id_key').selectpicker('val', code);
-		        $('#id_message').val('');
-		        $('#id_message').focus();
-		    } else {
-		        // user clicked "cancel"
-		    }
-		});
-		return;
-	}
-	else {
-		message = message.Message;
-	}
-	
-	alertify.success(htmlEncode(message));
-});
-
 $('#id_message').keydown(function(e) {
 	if (e.keyCode == 13) {
 		$('#id_enter_new_definition').click();
@@ -81,7 +38,7 @@ $('#id_enter_new_definition').click(function() {
 
 
 $('#id_body_table').on('click', 'tr', function() {
-	$('#id_body_table').find('.active').removeClass('active');
+	$('.active').removeClass('active');
 	$(this).addClass('active');
 	$('#id_special_key').selectpicker('val', $(this).find('.special_key').html());
     $('#id_key').selectpicker('val', $(this).find('.key').html());
@@ -128,12 +85,4 @@ function repopulate_table(selected) {
 				'<td class="remove"><span class="glyphicon glyphicon-remove"></span></td></tr>');
 	});
 	
-}
-
-function htmlEncode(value){
-	return $('<div/>').text(value).html();
-}
-
-function htmlDecode(value){
-	return $('<div/>').html(value).text();
 }
