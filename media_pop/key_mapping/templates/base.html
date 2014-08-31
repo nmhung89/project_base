@@ -11,13 +11,34 @@
 	<link rel="stylesheet" href="/static/libs/css/jquery-ui-custom.css">
 	<link rel="stylesheet" href="/static/css/main.css">
 	<style type="text/css">
+	.fb-btn {
+		padding-top: 15px;
+	}
 	{% block style %}
 	{% endblock %}
 	</style>
 </head>
 <body>
+	<!-- fb integration -->
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=844725562220441&version=v2.0";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+	<!-- end fb integration -->
+	
 	<div class="container-fluid">
-		<h1>Welcome to combination keys event catcher</h1>
+		<div class="row">
+			<div class="col-xs-6">
+				<h1>Welcome to combination keys event catcher</h1>
+			</div>
+			<div class="pull-right fb-btn">
+				<div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+			</div>
+		</div>
 		<ul class="nav nav-tabs" role="tablist">
 		  <li id="ul_home"><a href="/">Bootstrap table</a></li>
 		  <li id="ul_jqgrid"><a href="/jqgrid">Jqgrid</a></li>
