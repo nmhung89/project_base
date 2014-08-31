@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+Jqgrid - Media pop test
+{% endblock %}
+
+{% block style %}
+	.ui-widget {
+		font-size: 0.9em;
+	}
+{% endblock %}
+
+{% block body %}
+<br>
+<table id="list"></table>
+<div id="pager"></div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+var keys = '{{keys|safe}}';
+var special_keys = '{{special_keys|safe}}';
+$('#ul_jqgrid').addClass('active');
+</script>
+<script src="/static/js/home_jqgrid.js"></script>
+{% endblock %}
