@@ -14,6 +14,7 @@ jQuery("#list").jqGrid({
     viewrecords: true,
     caption:"Key Mapping"
 });
+
 jQuery("#list").jqGrid('navGrid','#pager',{
 	edit:true, add:true, del:true, search:false}, {
 		//edit
@@ -29,6 +30,7 @@ jQuery("#list").jqGrid('navGrid','#pager',{
             if(response.Code == 1) {
                  success = true;
                  alertify.success(response.Message);
+                 key_mapping[response.Key] = response.Data;
             }
              else 
             	 success = false;
@@ -43,6 +45,7 @@ jQuery("#list").jqGrid('navGrid','#pager',{
             if(response.Code == 1) {
                  success = true;
                  alertify.success(response.Message);
+                 key_mapping[response.Key] = response.Data;
             }
              else 
             	 success = false;
@@ -52,7 +55,9 @@ jQuery("#list").jqGrid('navGrid','#pager',{
 	}, {
 		//del
 		afterSubmit: function(response, postdata){
-			alertify.success(response.responseJSON.Message);
+			response = response.responseJSON;
+			delete key_mapping[response.Key];
+			alertify.success(response.Message);
 			return [true, ''];
          }
 	}

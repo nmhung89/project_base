@@ -56,6 +56,8 @@ class HomeJqgridAjaxView(BaseJsonAjaxView):
     
     def edit_grid_data(self, request, *args, **kwargs):
         oper = request.POST['oper']
+        rs_key = ''
+        data = {}
         if oper == 'add':
             rt = {'Code': 1, 'Message': 'Definition created successfully!'}
             special_key = request.POST['SpecialKey']
@@ -75,6 +77,12 @@ class HomeJqgridAjaxView(BaseJsonAjaxView):
                     rt['Code'] = -1
                     rt['Message'] = 'Your keys have been existed!'
                 else:
+                    rs_key = '%s_%s' % (special_key, key)
+                    data = {'Message': message, 
+                              'SpecialKey': special_key, 
+                              'Key': key, 
+                              'KeyText': chr(int(key))
+                              }
                     key_mapping = KeyMapping(SpecialKey=special_key, Key=key, Message=message)
                     key_mapping.save()
         elif oper == 'edit':
@@ -88,11 +96,20 @@ class HomeJqgridAjaxView(BaseJsonAjaxView):
                 key_mapping = KeyMapping.objects.get(pk=pk)
                 key_mapping.Message = message
                 key_mapping.save()
+                rs_key = '%s_%s' % (key_mapping.SpecialKey, key_mapping.Key)
+                data = {'Message': message, 
+                          'SpecialKey': key_mapping.SpecialKey, 
+                          'Key': key_mapping.Key, 
+                          'KeyText': chr(int(key_mapping.Key))
+                          }
         elif oper == 'del':
             rt = {'Code': 1, 'Message': 'Definition deleted successfully!'}
             pk = request.POST['id']
             key_mapping = KeyMapping.objects.get(pk=pk)
+            rs_key = '%s_%s' % (key_mapping.SpecialKey, key_mapping.Key)
             key_mapping.delete()
+        rt['Key'] = rs_key
+        rt['Data'] = data
         return rt
     
     def actions(self):
