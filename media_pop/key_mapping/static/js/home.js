@@ -38,7 +38,7 @@ $(document).keydown(function(e) {
 		message = message.Message;
 	}
 	
-	alertify.success(message);
+	alertify.success(htmlEncode(message));
 });
 
 $('#id_message').keydown(function(e) {
@@ -85,7 +85,7 @@ $('#id_body_table').on('click', 'tr', function() {
 	$(this).addClass('active');
 	$('#id_special_key').selectpicker('val', $(this).find('.special_key').html());
     $('#id_key').selectpicker('val', $(this).find('.key').html());
-    $('#id_message').val($(this).find('.message').html());
+    $('#id_message').val(htmlDecode($(this).find('.message').html()));
 });
 
 $('#id_body_table').on('click', '.remove', function() {
@@ -123,9 +123,17 @@ function repopulate_table(selected) {
 		}
 		$('#id_body_table').append('<tr class="' + tr_class + '"><td class="special_key">' + value.SpecialKey + '</td>' + 
 				'<td class="key_text">' + value.KeyText + '</td>' + 
-				'<td class="message">' + value.Message + '</td>' + 
+				'<td class="message">' + htmlEncode(value.Message) + '</td>' + 
 				'<td class="key">' + value.Key + '</td>' +
 				'<td class="remove"><span class="glyphicon glyphicon-remove"></span></td></tr>');
 	});
 	
+}
+
+function htmlEncode(value){
+	return $('<div/>').text(value).html();
+}
+
+function htmlDecode(value){
+	return $('<div/>').html(value).text();
 }
