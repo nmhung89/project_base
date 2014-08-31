@@ -3,51 +3,58 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Media pop test</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://silviomoreto.github.io/bootstrap-select/stylesheets/bootstrap-select.css">
-	<link rel="stylesheet" href="static/css/main.css">
+	<link rel="stylesheet" href="/static/libs/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/libs/css/bootstrap-select.css">
+	<link rel="stylesheet" href="/static/libs/css/alertify.core.css">
+	<link rel="stylesheet" href="/static/libs/css/alertify.default.css">
+	<link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body>
 	<div class="container-fluid" style="padding-top: 40px;">
-		<div class="row">
-			<div class="col-lg-2">
-				<select id="id_special_key" class="selectpicker">
+		<form class="form-inline" role="form">
+			<div class="form-group">
+				<select id="id_special_key" class="selectpicker" data-style="btn-warning">
 					<option value="">Select special key</option>
 					{% for k in special_keys %}
 					<option value="{{k.0}}">{{k.1}}</option>
 					{% endfor %}
 				</select>
 			</div>
-			<div class="col-lg-2">
-				<select id="id_key" class="selectpicker">
+			<div class="form-group">
+				<select id="id_key" class="selectpicker" data-style="btn-warning">
 					<option value="">Select key</option>
 					{% for k in keys %}
 					<option value="{{k.0}}">{{k.1}}</option>
 					{% endfor %}
 				</select>
 			</div>
-			<div class="col-lg-3">
-				<input type="text" id="id_message" class="form-control" placeholder="Enter your message">
+			<div class="form-group has-feedback">
+				<input type="text" id="id_message" class="form-control" placeholder="Enter your message"/>
 			</div>
-			<div class="col-lg-3">
-				<button type="button" class="btn btn-default" id="id_enter_new_definition">Save</button>
-			</div>
-		</div>
+			
+			
+			<button type="button" class="btn btn-primary" id="id_enter_new_definition">Save</button>
+			
+		</form>
+		<br>
 		<div class="row">
-			<table class="table">
+			<table class="table table-hover success">
 		        <thead>
-		          <tr>
+		          <tr class="info">
 		            <th>Special key</th>
 		            <th>Key</th>
 		            <th>Message</th>
+		            <th></th>
 		          </tr>
 		        </thead>
 		        <tbody id="id_body_table">
 		        	{% for item in key_mapping %}
 		          	<tr>
-		          		<td>{{item.SpecialKey}}</td>
-		          		<td>{{item.Key}}</td>
-		          		<td>{{item.Message}}</td>
+		          		<td class="special_key">{{item.SpecialKey}}</td>
+		          		<td class="key_text">{{item.Key}}</td>
+		          		<td class="message">{{item.Message}}</td>
+		          		<td class="key">{{item.KeyCode}}</td>
+		          		<td class="remove"><span class="glyphicon glyphicon-remove"></span></td>
 		          	<tr>
 		          	{% endfor %}
 		        </tbody>
@@ -56,13 +63,17 @@
 	</div>
 </body>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
-<script src="http://silviomoreto.github.io/bootstrap-select/javascripts/bootstrap-select.js"></script>
+<script src="/static/libs/js/bootstrap.min.js"></script>
+<script src="/static/libs/js/bootstrap-select.js"></script>
+<script src="/static/libs/js/alertify.js"></script>
+<script src="/static/libs/js/jquery.blockUI.js"></script>
+<script src="/static/js/home.js"></script>
 <script type="text/javascript">
 var key_mapping = {{key_mapping_json|safe}};
+$(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
 $(document).ready(function(e) {
     $('.selectpicker').selectpicker();
+    
 });
 
 </script>
-<script src="/static/js/home.js"></script>

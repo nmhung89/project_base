@@ -1,0 +1,16 @@
+.main {
+	padding-top: 40px;
+}
+
+.alertify-logs {
+    top: 10px;
+    right: 10px;
+}
+
+.key {
+	display: none;
+}
+
+.remove {
+	cursor: pointer;
+}
