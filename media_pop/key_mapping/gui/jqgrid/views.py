@@ -1,6 +1,6 @@
 from media_pop.common.base_view import BaseTemplateView, BaseJsonAjaxView
 from media_pop.key_mapping.core.models import KeyMapping, SPECIAL_KEYS
-import simplejson
+import json
 from cgi import escape
 
 class HomeJqgridView(BaseTemplateView):
@@ -14,7 +14,7 @@ class HomeJqgridView(BaseTemplateView):
                                                                        'SpecialKey': item.SpecialKey, 
                                                                        'Key': item.Key, 
                                                                        'KeyText': chr(int(item.Key))}
-        key_mapping_json = simplejson.dumps(key_mapping_dict)
+        key_mapping_json = json.dumps(key_mapping_dict)
         key_options = ''
         special_key_options = ''
         for item in range(ord('A'), ord('Z') + 1):

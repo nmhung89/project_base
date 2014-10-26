@@ -1,6 +1,6 @@
 from media_pop.common.base_view import BaseTemplateView, BaseJsonAjaxView
 from media_pop.key_mapping.core.models import KeyMapping, SPECIAL_KEYS
-import simplejson
+import json
 
 class HomeView(BaseTemplateView):
     template_name = 'home.html'
@@ -17,7 +17,7 @@ class HomeView(BaseTemplateView):
                                                                        'SpecialKey': item.SpecialKey, 
                                                                        'Key': item.Key, 
                                                                        'KeyText': chr(int(item.Key))}
-        key_mapping_json = simplejson.dumps(key_mapping_dict)
+        key_mapping_json = json.dumps(key_mapping_dict)
         keys = [(item, chr(item)) for item in range(ord('A'), ord('Z') + 1)]
         return {'key_mapping': all_data,
                 'key_mapping_json': key_mapping_json,

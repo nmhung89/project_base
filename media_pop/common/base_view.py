@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.generic.base import TemplateView, View
-import simplejson
+import json
 
 
 class BaseTemplateView(TemplateView):
@@ -39,19 +39,19 @@ class BaseJsonAjaxView(View):
     def get(self, request, *args, **kwargs):
         self.method = 'GET'
         resp = self.get_data(request, *args, **kwargs)
-        return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
+        return HttpResponse(json.dumps(resp), content_type="application/json" )
     
     def post(self, request, *args, **kwargs):
         self.method = 'POST'
         resp = self.get_data(request, *args, **kwargs)
-        return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
+        return HttpResponse(json.dumps(resp), content_type="application/json" )
     
     def put(self, request, *args, **kwargs):
         self.method = 'PUT'
         resp = self.get_data(request, *args, **kwargs)
-        return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
+        return HttpResponse(json.dumps(resp), content_type="application/json" )
     
     def delete(self, request, *args, **kwargs):
         self.method = 'DELETE'
         resp = self.get_data(request, *args, **kwargs)
-        return HttpResponse(simplejson.dumps(resp), mimetype="application/json" )
+        return HttpResponse(json.dumps(resp), content_type="application/json" )
